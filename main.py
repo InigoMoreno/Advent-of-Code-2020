@@ -1,8 +1,8 @@
 from importlib import import_module
 from time import time
 from os import listdir
+import re
 
-print(listdir())
 
 def profile(day_idx, show_percentages):
     print(f'day{day_idx}')
@@ -26,5 +26,17 @@ def profile(day_idx, show_percentages):
     print('')
     return duration
 
-total=sum(profile(i,True) for i in range(1,8))
-print(f'Total is {total:3f}')
+matches=[re.match('day([0-9]+).py',dir) for dir in listdir()]
+last=max(int(match.group(1)) for match in matches if match is not None)
+
+def profile_all(show_percentages):
+    total=sum(profile(i,show_percentages) for i in range(1,last+1))
+    print(f'Total is {total:3f}')
+
+def run_last():
+    day=import_module(f'day{last}')
+    print(f'part1: {day.part1()}, part2: {day.part2()}')
+
+
+profile_all(False)
+#run_last()
